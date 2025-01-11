@@ -1,6 +1,7 @@
 package at.edu.c02.puzzleroom;
 
 import at.edu.c02.puzzleroom.commands.CommandLoad;
+import at.edu.c02.puzzleroom.fields.Field;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FieldTest {
+
     @Test
     public void startField() throws Exception {
         GameBoard gameBoard = new GameBoardImpl();
@@ -59,6 +61,7 @@ public class FieldTest {
         assertEquals(0, player.getStepCount());
     }
 
+
     @Test
     public void finishField() throws Exception {
         GameBoard gameBoard = new GameBoardImpl();
@@ -75,4 +78,68 @@ public class FieldTest {
         // Game should be finished after moving right twice
         assertTrue(gameBoard.isFinished());
     }
+
+
+    @Test
+    public void oneWayFieldPositive() throws Exception {
+
+        GameBoard gameBoard = new GameBoardImpl();
+
+        // Finish is reached when moving twice to the right
+        new CommandLoad(new String[]{"src/test/resources/testOneWayPositiveNegative.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+        // anderes Maze nehmen mit Pfeilen
+
+        // Player should be able to move up and right in order to reach goal
+        player.moveUp();
+        assertTrue(player.moveRight());
+    }
+
+    @Test
+    public void oneWayFieldNegative() throws Exception {
+
+        GameBoard gameBoard = new GameBoardImpl();
+
+        // Finish is reached when moving twice to the right
+        new CommandLoad(new String[]{"src/test/resources/testOneWayPositiveNegative.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+        // anderes Maze nehmen mit Pfeilen
+
+        // Player should not be able to move down again
+        player.moveUp();
+        assertFalse(player.moveDown());
+    }
+
+    @Test
+    public void iceFieldTest() throws Exception {
+
+        GameBoard gameBoard = new GameBoardImpl();
+
+        // Finish is reached when moving twice to the right
+        new CommandLoad(new String[]{"src/test/resources/FieldIce.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        player.moveRight();
+
+        assertEquals(2, player.getRow());
+        assertEquals(4, player.getCol());
+
+    }
+
+
+    @Test
+    public void iceFieldTest2() throws Exception {
+
+        GameBoard gameBoard = new GameBoardImpl();
+
+        // Finish is reached when moving twice to the right
+        new CommandLoad(new String[]{"src/test/resources/FieldIce2.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        player.moveRight();
+
+        assertTrue(gameBoard.isFinished());
+
+    }
+
 }
