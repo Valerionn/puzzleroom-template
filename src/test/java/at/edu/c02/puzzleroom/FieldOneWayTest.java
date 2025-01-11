@@ -21,15 +21,17 @@ import static org.junit.Assert.assertFalse;
             assertEquals("Player should start at 0 steps", 0, player.getStepCount());
 
 
-            // Moving right on a '>' field
+            // Moving right on a '^' field
             boolean success = player.moveRight();
-            assertTrue("Player should be able to move right on a '>' field", success);
+            assertTrue("Player should be able to move right on a '^' field", success);
             assertEquals("Player should now be at 1 step", 1, player.getStepCount());
 
 
-            // Moving down on a 'v' field
-            success = player.moveDown();
-            assertTrue("Player should be able to move down on a 'v' field", success);
+
+
+            // Moving up on a '>' field
+            success = player.moveUp();
+            assertTrue("Player should be able to move up on a '>' field", success);
             assertEquals("Player should now be at 2 steps", 2, player.getStepCount());
 
         }
@@ -44,17 +46,37 @@ import static org.junit.Assert.assertFalse;
             // Initial state validation
             assertEquals("Player should start at 0 steps", 0, player.getStepCount());
 
+            // Attempting to move left on a ' ' field
+            boolean failure = player.moveLeft();
+            assertFalse("Player should not be able to move left on a '#' field", failure);
+            assertEquals("Player should now be at 1 step", 1, player.getStepCount());
+
+
+            // Move right on a ' ' field
+            player.moveRight();
+
+            // Attempting to move left on a '^' field
+            boolean success = player.moveLeft();
+            assertFalse("Player should NOT be able to move left on a '^' field", success);
+            assertEquals("Player should still be at 0 steps", 1, player.getStepCount());
+
+            // Move up on a '^' field
+            player.moveUp();
+
+            // Attempting to move up on a '>' field
+            success = player.moveUp();
+            assertFalse("Player should NOT be able to move up on a '>' field", success);
+            assertEquals("Player should still be at 0 steps", 2, player.getStepCount());
 
             // Attempting to move left on a '>' field
-            boolean success = player.moveLeft();
+            success = player.moveLeft();
             assertFalse("Player should NOT be able to move left on a '>' field", success);
-            assertEquals("Player should still be at 0 steps", 0, player.getStepCount());
+            assertEquals("Player should still be at 0 steps", 2, player.getStepCount());
 
-
-            // Attempting to move up on a 'v' field
-            success = player.moveUp();
-            assertFalse("Player should NOT be able to move up on a 'v' field", success);
-            assertEquals("Player should still be at 0 steps", 0, player.getStepCount());
+            // Attempting to move down on a '>' field
+            success = player.moveDown();
+            assertFalse("Player should NOT be able to move down on a '>' field", success);
+            assertEquals("Player should still be at 0 steps", 2, player.getStepCount());
 
         }
         }
