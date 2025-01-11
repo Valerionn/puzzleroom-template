@@ -1,6 +1,7 @@
 package at.edu.c02.puzzleroom;
 
 import at.edu.c02.puzzleroom.commands.CommandLoad;
+import at.edu.c02.puzzleroom.exceptions.PuzzleRoomException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -74,5 +75,41 @@ public class FieldTest {
         player.moveRight();
         // Game should be finished after moving right twice
         assertTrue(gameBoard.isFinished());
+    }
+
+    @Test
+    public void fieldOneWaySuccess() throws PuzzleRoomException {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/fieldoneway.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        // r u r d d r r u
+        player.moveRight();
+        assertFalse(gameBoard.isFinished());
+        player.moveUp();
+        assertFalse(gameBoard.isFinished());
+        player.moveRight();
+        assertFalse(gameBoard.isFinished());
+        player.moveDown();
+        assertFalse(gameBoard.isFinished());
+        player.moveDown();
+        assertFalse(gameBoard.isFinished());
+        player.moveRight();
+        assertFalse(gameBoard.isFinished());
+        player.moveRight();
+        assertFalse(gameBoard.isFinished());
+        player.moveUp();
+        assertTrue(gameBoard.isFinished());
+    }
+
+    @Test
+    public void fieldOneWayFailed() throws PuzzleRoomException {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/fieldoneway.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        player.moveRight();
+        // only up allowed here
+        assertFalse(player.moveDown());
     }
 }
