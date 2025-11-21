@@ -75,4 +75,96 @@ public class FieldTest {
         // Game should be finished after moving right twice
         assertTrue(gameBoard.isFinished());
     }
+
+    @Test
+    public void oneWayField() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+        // Finish is reached when moving twice to the right
+        new CommandLoad(new String[]{"src/test/resources/oneWay.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        // Player should start at 0 steps
+        assertEquals(0, player.getStepCount());
+
+
+        boolean success = player.moveRight();
+        assertTrue(success);
+
+        boolean success1 = player.moveUp();
+        assertTrue(success);
+
+        boolean success2 = player.moveLeft();
+        assertFalse(success2);
+
+        // Player should now be at 1 step
+        assertEquals(2, player.getStepCount());
+    }
+
+    @Test
+    public void iceFieldSlidesUntilPath() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/iceSimple.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        boolean firstMove = player.moveRight();
+        assertTrue(firstMove);
+        // Slide over two ice fields onto a path (3 steps total)
+        assertEquals(3, player.getStepCount());
+        assertEquals(1, player.getRow());
+        assertEquals(4, player.getCol());
+
+        boolean secondMove = player.moveRight();
+        assertTrue(secondMove);
+        assertTrue(gameBoard.isFinished());
+        assertEquals(4, player.getStepCount());
+        assertEquals(1, player.getRow());
+        assertEquals(5, player.getCol());
+    }
+
+    @Test
+    public void iceFieldStopsAtWall() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/iceWall.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        boolean firstMove = player.moveRight();
+        assertTrue(firstMove);
+        // Step onto ice and count the blocked slide against the wall
+        assertEquals(2, player.getStepCount());
+        assertEquals(1, player.getRow());
+        assertEquals(2, player.getCol());
+
+        boolean secondMove = player.moveRight();
+        assertFalse(secondMove);
+        // Attempting to move into the wall again should not change steps or position
+        assertEquals(2, player.getStepCount());
+        assertEquals(1, player.getRow());
+        assertEquals(2, player.getCol());
+    }
+        @Test
+    public void playerCannotMoveAfterFinish() throws Exception {
+        GameBoard gameBoard = new GameBoardImpl();
+        new CommandLoad(new String[]{"src/test/resources/simple.maze"}).execute(gameBoard);
+        Player player = gameBoard.getPlayer();
+
+        // Maze beenden
+        player.moveRight();
+        player.moveRight();
+
+        // Spiel ist fertig
+        assertTrue(gameBoard.isFinished());
+        int stepsAfterFinish = player.getStepCount();
+        int rowAfterFinish = player.getRow();
+        int colAfterFinish = player.getCol();
+
+        // weiterer Move darf nichts mehr ändern
+        boolean success = player.moveRight();
+        assertFalse(success);
+        assertTrue(gameBoard.isFinished());
+        assertEquals(stepsAfterFinish, player.getStepCount());
+        assertEquals(rowAfterFinish, player.getRow());
+        assertEquals(colAfterFinish, player.getCol());
+    }
+}
+
 }
